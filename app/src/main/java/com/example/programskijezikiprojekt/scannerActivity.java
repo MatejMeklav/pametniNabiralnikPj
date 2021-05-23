@@ -6,8 +6,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,6 +19,12 @@ import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 
 public class scannerActivity extends AppCompatActivity {
+
+    private static final String TAG = scannerActivity.class.getSimpleName();
+
+    public static final int ACTIVITY_ID_SCANNER_ACTIVITY=100;
+
+    public static final String QR_CODE = "QR_CODE";
 
     private CodeScanner mCodeScanner;
     @Override
@@ -54,6 +62,11 @@ public class scannerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(scannerActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
+                        Log.i(TAG, "KODA: " + result.getText());
+                        Intent data = getIntent();
+                        data.putExtra(QR_CODE, result.getText());
+                        setResult(RESULT_OK, data);
+                        finish();
                     }
                 });
             }
