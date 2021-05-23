@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.View;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
@@ -71,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 String Token = jsonObject.getString("Data");
                 System.out.println("data: "+Token);
 
-                decompressAndWriteZip(Token);
-                unpackZip(getFilesDir().toString(),"token.zip");
+                jsonToZip(Token);
+                extractZip(getFilesDir().toString(),"token.zip");
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -97,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         mPlayer.start();
     }
 
-    private boolean unpackZip(String path, String zipPath)
+    private boolean extractZip(String path, String zipPath)
     {
         InputStream is;
         ZipInputStream zis;
@@ -144,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void decompressAndWriteZip(String data){
+    private void jsonToZip(String data){
 
         byte[] outputBytes;
         outputBytes = Base64.decode(data, Base64.DEFAULT);
