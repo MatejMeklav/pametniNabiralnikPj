@@ -1,5 +1,8 @@
 package com.example.programskijezikiprojekt;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,15 +10,21 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.fragment.app.DialogFragment;
 
 
 import org.json.JSONException;
@@ -27,11 +36,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity  {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static String ID_BOX ="";
 
@@ -40,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
+
+
 
 
     public void CodeScan(View view) {
@@ -60,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void OpenBox(View view) {
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url ="https://api-test.direct4.me/Sandbox/PublicAccess/V1/api/access/OpenBox?boxID="+ID_BOX+"&tokenFormat=2";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             try {
@@ -93,6 +104,51 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         mPlayer.start();
+
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        System.out.println("DELA POSITIVE");
+                        String url = "https://164.8.206.230/index.php";
+                        HttpsTrustManager.allowAllSSL();
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                                response -> {
+                                    Toast.makeText(MainActivity.this, response.trim(), Toast.LENGTH_SHORT).show();
+                                    System.out.println("SUCESSSSSS");
+
+
+                                }, error -> {
+                                    Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                    System.out.println("DELA error"+error.toString());
+
+                                }){
+                            @Override
+                            protected Map<String, String> getParams(){
+                                Map<String,String> params = new HashMap<String, String>();
+                                params.put("data",ID_BOX);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+                        stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                        requestQueue.add(stringRequest);
+
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //mPlayer.start();
+                        System.out.println("DELA NEGATIVE");
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Ste uspešno odprli nabiralnik?").setPositiveButton("Da", dialogClickListener)
+                .setNegativeButton("Ne", dialogClickListener).show();
+
     }
 
     private boolean extractZip(String path, String zipPath)
@@ -112,8 +168,6 @@ public class MainActivity extends AppCompatActivity {
             {
                 filename = ze.getName();
                 System.out.println(filename);
-                // Need to create directories if not exists, or
-                // it will generate an Exception...
                 if (ze.isDirectory()) {
                     File fmd = new File(path +"/"+ filename);
                     fmd.mkdirs();
@@ -153,4 +207,5 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Napaka", e.toString());
         }
     }
+
 }
