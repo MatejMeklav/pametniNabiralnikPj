@@ -111,12 +111,12 @@ public class MainActivity extends AppCompatActivity  {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
                         System.out.println("DELA POSITIVE");
-                        String url = "https://164.8.206.230/index.php";
+                        String url = "https://192.168.0.107/index.php";
                         HttpsTrustManager.allowAllSSL();
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                                 response -> {
                                     Toast.makeText(MainActivity.this, response.trim(), Toast.LENGTH_SHORT).show();
-                                    System.out.println("SUCESSSSSS");
+                                    System.out.println("SUCESSSSSS"+response);
 
 
                                 }, error -> {
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity  {
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-                        //mPlayer.start();
+                        mPlayer.start();
                         System.out.println("DELA NEGATIVE");
                         break;
                 }
