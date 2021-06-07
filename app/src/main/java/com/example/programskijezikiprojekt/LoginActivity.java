@@ -18,6 +18,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,6 +41,10 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(!Python.isStarted()){
+            Python.start(new AndroidPlatform(getBaseContext()));
+        }
+
         btn_login = (Button)findViewById(R.id.btn_login);
         et_username = (EditText)findViewById(R.id.et_username);
         et_password = (EditText)findViewById(R.id.et_password);
@@ -51,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 String username=et_username.getText().toString();
                 String password=et_password.getText().toString();
-                String url = "https://192.168.0.107/index.php";
+                String url = "https://192.168.1.11/index.php";
                 HttpsTrustManager.allowAllSSL();
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                         response -> {
@@ -98,39 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s = null;
 
-                try {
-
-                    // run the Unix "ps -ef" command
-                    // using the Runtime exec method:
-                    Process p = Runtime.getRuntime().exec("ps -ef");
-
-                    BufferedReader stdInput = new BufferedReader(new
-                            InputStreamReader(p.getInputStream()));
-
-                    BufferedReader stdError = new BufferedReader(new
-                            InputStreamReader(p.getErrorStream()));
-
-                    // read the output from the command
-                    System.out.println("Here is the standard output of the command:\n");
-                    while ((s = stdInput.readLine()) != null) {
-                        System.out.println(s);
-                    }
-
-                    // read any errors from the attempted command
-                    System.out.println("Here is the standard error of the command (if any):\n");
-                    while ((s = stdError.readLine()) != null) {
-                        System.out.println(s);
-                    }
-
-                    System.exit(0);
-                }
-                catch (IOException e) {
-                    System.out.println("exception happened - here's what I know: ");
-                    e.printStackTrace();
-                    System.exit(-1);
-                }
             }
         });
     }

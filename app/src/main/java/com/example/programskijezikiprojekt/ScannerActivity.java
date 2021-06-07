@@ -18,9 +18,9 @@ import com.budiyev.android.codescanner.CodeScannerView;
 import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.Result;
 
-public class scannerActivity extends AppCompatActivity {
+public class ScannerActivity extends AppCompatActivity {
 
-    private static final String TAG = scannerActivity.class.getSimpleName();
+    private static final String TAG = ScannerActivity.class.getSimpleName();
 
     public static final int ACTIVITY_ID_SCANNER_ACTIVITY=100;
 
@@ -31,9 +31,9 @@ public class scannerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
-        if (ContextCompat.checkSelfPermission(scannerActivity.this, Manifest.permission.CAMERA)
+        if (ContextCompat.checkSelfPermission(ScannerActivity.this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
-            ActivityCompat.requestPermissions(scannerActivity.this, new String[] {Manifest.permission.CAMERA}, 123);
+            ActivityCompat.requestPermissions(ScannerActivity.this, new String[] {Manifest.permission.CAMERA}, 123);
         } else {
             startScanning();
         }
@@ -61,7 +61,7 @@ public class scannerActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(scannerActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ScannerActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
                         Log.i(TAG, "KODA: " + result.getText());
                         Intent data = getIntent();
                         data.putExtra(QR_CODE, result.getText());

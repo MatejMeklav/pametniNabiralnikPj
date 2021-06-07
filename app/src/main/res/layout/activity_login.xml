@@ -1,5 +1,6 @@
 <?xml version = "1.0" encoding = "utf-8"?>
 <RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools = "http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height = "match_parent"
      tools:context = ".MainActivity">
@@ -20,7 +21,7 @@
         android:layout_below="@+id/textview"
         android:layout_centerHorizontal="true"
         android:text="Pametni paketnik"
-        android:textColor="#ff7aff24"
+        android:textColor="#afda2c"
         android:textSize="35dp" />
 
     <EditText
@@ -39,8 +40,8 @@
         android:layout_marginRight="2dp"
         android:focusable="true"
         android:hint="Username"
-        android:textColorHighlight="#ff7eff15"
-        android:textColorHint="#ffff25e6" />
+        android:textColorHighlight="#afda2c"
+        android:textColorHint="#afda2c" />
 
     <ImageView
         android:layout_width="wrap_content"
@@ -61,7 +62,7 @@
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
-        android:textColorHint="#ffff299f" />
+        android:textColorHint="#afda2c" />
 
     <Button
         android:id="@+id/btn_login"
@@ -80,5 +81,19 @@
         android:layout_toEndOf="@+id/textview"
         android:layout_toRightOf="@+id/textview"
         android:text="Capture image" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="183dp"
+        android:layout_height="242dp"
+        android:layout_above="@+id/btn_login"
+        android:layout_below="@+id/et_password"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="162dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="50dp"
+        app:srcCompat="@mipmap/ic_login_paketnik" />
 
 </RelativeLayout>

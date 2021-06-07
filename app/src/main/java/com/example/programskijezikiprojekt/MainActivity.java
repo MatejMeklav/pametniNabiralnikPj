@@ -1,31 +1,30 @@
 package com.example.programskijezikiprojekt;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.data.FirebaseDostop;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +35,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -44,6 +45,7 @@ import java.util.zip.ZipInputStream;
 public class MainActivity extends AppCompatActivity  {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static String ID_BOX ="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,24 +56,26 @@ public class MainActivity extends AppCompatActivity  {
 
 
 
-    public void CodeScan(View view) {
-        Intent i = new Intent(getBaseContext(), scannerActivity.class);
-        startActivityForResult(i, scannerActivity.ACTIVITY_ID_SCANNER_ACTIVITY);
+    public void codeScan(View view) {
+        Intent i = new Intent(getBaseContext(), ScannerActivity.class);
+        startActivityForResult(i, ScannerActivity.ACTIVITY_ID_SCANNER_ACTIVITY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == scannerActivity.ACTIVITY_ID_SCANNER_ACTIVITY) {
+        if (requestCode == ScannerActivity.ACTIVITY_ID_SCANNER_ACTIVITY) {
             if (resultCode == RESULT_OK) {
                // Log.i(TAG, "QR CODE: " + data.getExtras().get(scannerActivity.QR_CODE));
-                ID_BOX = data.getExtras().get(scannerActivity.QR_CODE).toString();
+                ID_BOX = data.getExtras().get(ScannerActivity.QR_CODE).toString();
             }
         }
     }
 
 
-    public void OpenBox(View view) {
+
+
+    public void openBox(View view) {
         String url ="https://api-test.direct4.me/Sandbox/PublicAccess/V1/api/access/OpenBox?boxID="+ID_BOX+"&tokenFormat=2";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
             try {
@@ -106,12 +110,19 @@ public class MainActivity extends AppCompatActivity  {
         mPlayer.start();
 
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which){
                     case DialogInterface.BUTTON_POSITIVE:
-                        System.out.println("DELA POSITIVE");
-                        String url = "https://192.168.0.107/index.php";
+                        GPSTracking gps = new GPSTracking(getBaseContext());
+
+                        FirebaseDostop obj = new FirebaseDostop(ID_BOX, gps.getLat(), gps.getLng(),LocalDateTime.now());
+                        System.out.println("datedate"+LocalDateTime.now().toString());
+                            FirebaseDatabase database = FirebaseDatabase.getInstance("https://pametninabiralnikpj-default-rtdb.europe-west1.firebasedatabase.app/");
+                            Task<Void> myRef = database.getReference("Dostop").child("dostopi").push().setValue(obj);;
+                       //
+                        String url = "https://192.168.1.11/index.php";
                         HttpsTrustManager.allowAllSSL();
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                                 response -> {
@@ -134,7 +145,6 @@ public class MainActivity extends AppCompatActivity  {
                         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
                         stringRequest.setRetryPolicy(new DefaultRetryPolicy(20 * 1000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                         requestQueue.add(stringRequest);
-
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:

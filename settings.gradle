@@ -1,2 +1,4 @@
+include ':data'
 include ':app'
 rootProject.name = "ProgramskiJezikiProjekt"
+include ':cv2'
