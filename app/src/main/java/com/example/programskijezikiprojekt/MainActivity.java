@@ -81,20 +81,7 @@ public class MainActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
 
-        final MediaPlayer mPlayer = MediaPlayer.create(this, Uri.parse(getFilesDir()+"/token.wav") );
-        mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.release();
-            }
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        mPlayer.start();
+        Log.i(TAG, "OpenBox: SOMETHING");
     }
 
     private boolean unpackZip(String path, String zipPath)
