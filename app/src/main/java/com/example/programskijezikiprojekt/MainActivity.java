@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -45,12 +46,17 @@ import java.util.zip.ZipInputStream;
 public class MainActivity extends AppCompatActivity  {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static String ID_BOX ="";
+    TextView nameVal;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        nameVal=(TextView)findViewById(R.id.textViewNameVal);
+        String text = "Scan QR code first!";
+        nameVal.setText(text);
+
     }
 
 
@@ -59,6 +65,7 @@ public class MainActivity extends AppCompatActivity  {
     public void codeScan(View view) {
         Intent i = new Intent(getBaseContext(), ScannerActivity.class);
         startActivityForResult(i, ScannerActivity.ACTIVITY_ID_SCANNER_ACTIVITY);
+
     }
 
     @Override
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity  {
             if (resultCode == RESULT_OK) {
                // Log.i(TAG, "QR CODE: " + data.getExtras().get(scannerActivity.QR_CODE));
                 ID_BOX = data.getExtras().get(ScannerActivity.QR_CODE).toString();
+                nameVal.setText(ID_BOX);
             }
         }
     }
@@ -122,7 +130,7 @@ public class MainActivity extends AppCompatActivity  {
                             FirebaseDatabase database = FirebaseDatabase.getInstance("https://pametninabiralnikpj-default-rtdb.europe-west1.firebasedatabase.app/");
                             Task<Void> myRef = database.getReference("Dostop").child("dostopi").push().setValue(obj);;
                        //
-                        String url = "https://192.168.1.11/index.php";
+                        String url = "https://164.8.206.154/index.php";
                         HttpsTrustManager.allowAllSSL();
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                                 response -> {
